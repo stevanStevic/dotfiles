@@ -1,0 +1,4 @@
+*.bak-*
+
+# Local planning artifacts (specs, designs, plans) — not for the public repo
+docs/superpowers/
