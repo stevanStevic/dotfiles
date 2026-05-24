@@ -8,7 +8,7 @@ and dotfile symlinks into `$HOME`.
 ## Bootstrap (fresh machine)
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/<user>/dotfiles/main/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevanStevic/dotfiles/main/bootstrap.sh)"
 ```
 
 That installs `git`, clones this repo to `~/ws/dotfiles`, and runs all modules.

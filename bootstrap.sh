@@ -3,14 +3,14 @@
 # Clones the dotfiles repo (if absent) and execs install.sh with passed args.
 #
 # Usage:
-#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/<user>/dotfiles/main/bootstrap.sh)"
+#   bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevanStevic/dotfiles/main/bootstrap.sh)"
 #
 # REPO_URL must point at the published repo. Edit this constant after first push.
 
 set -euo pipefail
 IFS=$'\n\t'
 
-REPO_URL="https://github.com/<user>/dotfiles.git"
+REPO_URL="https://github.com/stevanStevic/dotfiles.git"
 DEST="${DOTFILES_DEST:-$HOME/ws/dotfiles}"
 
 log() { printf '[bootstrap] %s\n' "$*"; }
