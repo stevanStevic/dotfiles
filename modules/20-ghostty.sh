@@ -9,7 +9,11 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../lib/common.sh
 source "$REPO_ROOT/lib/common.sh"
 
-ensure_snap ghostty --classic
+if [[ "${IN_CONTAINER:-0}" == "1" ]]; then
+  log "container mode; skipping snap install"
+else
+  ensure_snap ghostty --classic
+fi
 
 ALT_PATH=/snap/bin/ghostty
 if [[ -x "$ALT_PATH" ]]; then
@@ -28,8 +32,8 @@ else
 fi
 
 # GNOME custom keybinding: Ctrl+Alt+T -> ghostty
-if [[ "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]]; then
-  log "non-GNOME desktop (${XDG_CURRENT_DESKTOP:-unknown}); skipping shortcut"
+if [[ "${IN_CONTAINER:-0}" == "1" || "${XDG_CURRENT_DESKTOP:-}" != *GNOME* ]]; then
+  log "non-GNOME desktop or container (${XDG_CURRENT_DESKTOP:-unknown}); skipping shortcut"
   exit 0
 fi
 

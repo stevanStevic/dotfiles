@@ -27,12 +27,13 @@ if [[ -z "$ZSH_BIN" ]]; then
   exit 0
 fi
 
-current_shell="$(getent passwd "$USER" | cut -d: -f7)"
+target_user="${USER:-$(whoami)}"
+current_shell="$(getent passwd "$target_user" | cut -d: -f7)"
 if [[ "$current_shell" == "$ZSH_BIN" ]]; then
-  log "$USER login shell already $ZSH_BIN"
+  log "$target_user login shell already $ZSH_BIN"
 else
-  log "changing login shell for $USER -> $ZSH_BIN"
-  if [[ "${DRY_RUN:-0}" != "1" ]]; then
-    chsh -s "$ZSH_BIN" "$USER"
+  log "changing login shell for $target_user -> $ZSH_BIN"
+  if [[ "${DRY_RUN:-0}" != "1" && "${IN_CONTAINER:-0}" != "1" ]]; then
+    chsh -s "$ZSH_BIN" "$target_user"
   fi
 fi

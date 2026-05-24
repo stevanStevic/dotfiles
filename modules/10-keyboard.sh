@@ -51,6 +51,6 @@ else
 fi
 
 log "running dpkg-reconfigure xkb-data"
-if [[ "${DRY_RUN:-0}" != "1" ]]; then
+if [[ "${DRY_RUN:-0}" != "1" && "${IN_CONTAINER:-0}" != "1" ]]; then
   sudo dpkg-reconfigure -f noninteractive xkb-data
 fi
