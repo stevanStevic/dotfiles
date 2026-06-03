@@ -45,6 +45,21 @@ fi
 CB_SCHEMA=org.gnome.settings-daemon.plugins.media-keys
 CB_PATH=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/
 
+# GNOME ships a built-in "terminal" media key bound to <Primary><Alt>t (i.e.
+# Ctrl+Alt+T) that launches the default terminal. It holds the accelerator grab,
+# so a custom keybinding on the same shortcut fails to grab and never fires
+# (journalctl --user: "Failed to grab accelerator ... custom0"). Empty it so the
+# Ghostty binding below can own Ctrl+Alt+T.
+builtin_term="$(gsettings get "$CB_SCHEMA" terminal 2>/dev/null || echo '@as []')"
+if [[ "$builtin_term" == "@as []" || "$builtin_term" == "[]" ]]; then
+  log "built-in terminal media key already cleared"
+else
+  log "clearing built-in terminal media key (was: $builtin_term)"
+  if [[ "${DRY_RUN:-0}" != "1" ]]; then
+    gsettings set "$CB_SCHEMA" terminal "@as []"
+  fi
+fi
+
 current_list="$(gsettings get "$CB_SCHEMA" custom-keybindings 2>/dev/null || echo '@as []')"
 if echo "$current_list" | grep -q "$CB_PATH"; then
   log "custom0 already in custom-keybindings list"
@@ -64,3 +79,20 @@ KB_SCHEMA="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CB_P
 ensure_gsettings_kv "$KB_SCHEMA" name    'Ghostty'
 ensure_gsettings_kv "$KB_SCHEMA" command "$ALT_PATH"
 ensure_gsettings_kv "$KB_SCHEMA" binding '<Ctrl><Alt>t'
+
+# gnome-settings-daemon grabs keybindings at session start and does not reliably
+# re-grab after we clear the conflicting built-in terminal key in the same run.
+# Restart gsd-media-keys so it re-reads the shortcuts and the Ghostty binding
+# takes effect now; otherwise it only applies after a logout/login. The unit is
+# static and refuses manual systemctl start, so kill it and relaunch detached
+# (the session respawns a managed instance on next login regardless).
+if pgrep -x gsd-media-keys >/dev/null 2>&1; then
+  log "reloading gsd-media-keys so Ctrl+Alt+T takes effect now"
+  if [[ "${DRY_RUN:-0}" != "1" ]]; then
+    pkill -x gsd-media-keys || true
+    setsid /usr/libexec/gsd-media-keys >/dev/null 2>&1 < /dev/null &
+    disown || true
+  fi
+else
+  log "gsd-media-keys not running; log out/in for Ctrl+Alt+T to take effect"
+fi

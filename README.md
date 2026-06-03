@@ -18,8 +18,8 @@ That installs `git`, clones this repo to `~/ws/dotfiles`, and runs all modules.
 | Module | Purpose |
 |---|---|
 | `00-apt-base` | apt refresh + base packages (curl, git, build-essential, …) |
-| `10-keyboard` | Caps Lock → Ctrl via `/etc/default/keyboard` |
-| `20-ghostty` | Install Ghostty (snap), register as terminal, GNOME `Ctrl+Alt+T` shortcut |
+| `10-keyboard` | Caps Lock → Ctrl via `/etc/default/keyboard` **and** GNOME `input-sources` xkb-options |
+| `20-ghostty` | Install Ghostty (snap), register as terminal, clear GNOME's built-in terminal key, bind `Ctrl+Alt+T` → Ghostty |
 | `30-zsh` | zsh + oh-my-zsh, set as login shell |
 | `40-nvim` | neovim ≥ 0.11 from stable PPA |
 | `50-tmux` | tmux |
@@ -36,8 +36,13 @@ That installs `git`, clones this repo to `~/ws/dotfiles`, and runs all modules.
 
 ## After install
 
-- **Caps→Ctrl** and **default shell** take effect after a logout/login (or reboot).
-- **GNOME shortcut** binds `Ctrl+Alt+T` to Ghostty immediately.
+- **Caps→Ctrl**: on GNOME/Wayland it applies immediately (set via GNOME
+  `input-sources`); the `/etc/default/keyboard` change for console/non-GNOME
+  sessions takes effect after a logout/login. **Default shell** takes effect
+  after a logout/login (or reboot).
+- **GNOME `Ctrl+Alt+T` → Ghostty**: the module binds the shortcut, clears
+  GNOME's conflicting built-in terminal key, and reloads `gnome-settings-daemon`
+  so it works right away. If it still opens the old terminal, log out/in.
 
 ## Editing configs
 
@@ -64,9 +69,17 @@ dotfiles/config/nvim/           -> ~/.config/nvim/
 - **Symlink conflicts** — a real file already exists where a symlink should go.
   The script backs it up to `<path>.bak-<UTC-timestamp>`. Move or remove the
   backup if it's no longer needed.
-- **Caps→Ctrl didn't take effect** — log out / log back in. The remap is at the
-  X / Wayland session level.
+- **Caps→Ctrl didn't take effect** — on GNOME/Wayland the active option lives in
+  GNOME, not `/etc/default/keyboard`. Check `gsettings get
+  org.gnome.desktop.input-sources xkb-options` (should contain
+  `'caps:ctrl_modifier'`); rerun `./install.sh keyboard` to set it, or log out/in.
 - **Snap install fails** — `sudo snap install core` first, or rerun later.
+- **`Ctrl+Alt+T` opens the wrong terminal (or nothing)** — GNOME's built-in
+  terminal media key holds that shortcut and `gnome-settings-daemon` hasn't
+  re-grabbed the Ghostty binding. Rerun `./install.sh ghostty` (it clears the
+  built-in key and reloads gsd), or log out/in. Diagnose with
+  `journalctl --user -b | grep -i 'failed to grab.*custom0'` — if that line
+  appears, gsd couldn't claim the shortcut.
 
 ## Testing
 

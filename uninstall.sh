@@ -80,6 +80,18 @@ if want keyboard; then
   if [[ "${DRY_RUN:-0}" != "1" ]]; then
     sudo dpkg-reconfigure -f noninteractive xkb-data
   fi
+  # Remove caps:ctrl_modifier from GNOME input-sources (install set it there too).
+  if have_cmd gsettings && [[ "${XDG_CURRENT_DESKTOP:-}" == *GNOME* ]]; then
+    IS_SCHEMA=org.gnome.desktop.input-sources
+    current_opts="$(gsettings get "$IS_SCHEMA" xkb-options 2>/dev/null || echo '[]')"
+    if echo "$current_opts" | grep -q "'caps:ctrl_modifier'"; then
+      log "removing caps:ctrl_modifier from GNOME xkb-options"
+      if [[ "${DRY_RUN:-0}" != "1" ]]; then
+        new_opts="$(echo "$current_opts" | sed "s|, *'caps:ctrl_modifier'||; s|'caps:ctrl_modifier', *||; s|'caps:ctrl_modifier'||")"
+        gsettings set "$IS_SCHEMA" xkb-options "$new_opts"
+      fi
+    fi
+  fi
 fi
 
 # ---- ghostty ----
@@ -103,6 +115,12 @@ if want ghostty; then
         gsettings set "$CB_SCHEMA" custom-keybindings "$new_list"
         gsettings reset-recursively "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${CB_PATH}" || true
       fi
+    fi
+    # Restore GNOME's built-in terminal media key (install cleared it so the
+    # custom Ghostty binding could own Ctrl+Alt+T).
+    log "restoring built-in terminal media key to GNOME default"
+    if [[ "${DRY_RUN:-0}" != "1" ]]; then
+      gsettings reset "$CB_SCHEMA" terminal || true
     fi
   fi
   if [[ "$PURGE" == "1" ]] && snap list ghostty >/dev/null 2>&1; then
