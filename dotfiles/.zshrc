@@ -101,14 +101,8 @@ source $ZSH/oh-my-zsh.sh
 #
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
-alias cc='claude --dangerously-skip-permissions'
-
-# Git aliases
-alias gs='git status'
-alias gc='git checkout'
-alias gb='git checkout -b'
-alias gp='git push'
-alias gl='git log --oneline'
+# Shared with the loptech-ws server: edit them in ~/.aliases.zsh
+[[ -r ~/.aliases.zsh ]] && source ~/.aliases.zsh
 
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PATH=~/.npm-global/bin:$PATH
