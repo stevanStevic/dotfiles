@@ -45,6 +45,7 @@ rows() {
 }
 
 run() {
+  local IFS=' '
   log "$*"
   if [[ "${DRY_RUN:-0}" == "1" ]]; then return 0; fi
   "$@"
