@@ -2,7 +2,7 @@
 #   marketplace  <name>  <github owner/repo | git URL | ~/path>
 # Local plugins live in claude/mods; the module links ~/.claude/mods to it.
 #   plugin       <plugin@marketplace>
-#   mcp-http     <name>  <URL>          (OAuth: run /mcp once to log in)
+#   mcp-http     <name>  <URL>[ <extra claude mcp add flags>]  (run /mcp once to log in)
 #   mcp-stdio    <name>  <command line>
 # profiles: "brain" (laptop and your server account), "laptop" or "server"
 # (one of them only), "agent" (<you>-agent: work tools only, nothing that
@@ -33,6 +33,6 @@ plugin	text-to-cad@earthtojake	-	brain
 plugin	telegram@claude-plugins-official	-	server
 mcp-http	figma	https://mcp.figma.com/mcp	brain
 mcp-http	linear-server	https://mcp.linear.app/mcp	brain
-mcp-http	slack-chladni	https://mcp.slack.com/mcp	brain
+mcp-http	slack-chladni	https://mcp.slack.com/mcp --client-id 1601185624273.8899143856786 --callback-port 3118	brain
 mcp-stdio	playwright	npx @playwright/mcp@latest	brain
 mcp-stdio	blender	uvx mcp-for-blender	laptop

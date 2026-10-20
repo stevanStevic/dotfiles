@@ -89,10 +89,13 @@ while IFS=$'\t' read -r name _; do
   run claude plugin install "$name" --scope user
 done < <(rows plugin)
 
-while IFS=$'\t' read -r name url; do
+while IFS=$'\t' read -r name src; do
   grep -qxF "$name" <<<"$have_mcp" && continue
   missing mcp "$name" || continue
-  run claude mcp add --scope user --transport http "$name" "$url"
+  # URL first, then any extra flags (e.g. Slack's fixed OAuth client).
+  IFS=' ' read -r url flags <<<"$src"
+  IFS=' ' read -r -a extra <<<"${flags:-}"
+  run claude mcp add --scope user --transport http "${extra[@]}" "$name" "$url"
 done < <(rows mcp-http)
 
 while IFS=$'\t' read -r name cmd; do
