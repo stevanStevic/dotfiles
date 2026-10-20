@@ -1,0 +1,6 @@
+{
+  "name": "fwlog",
+  "version": "0.3.0",
+  "description": "Live firmware log pane: tabbed, per-session tail of /tmp/claude-bench/*.log with scrollback, never touching the serial port",
+  "types": "./types/index.d.ts"
+}

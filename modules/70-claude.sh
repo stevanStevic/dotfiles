@@ -23,6 +23,7 @@ else
   PROFILE="${CLAUDE_PROFILE:-brain,laptop}"
 fi
 CHECK="${CLAUDE_CHECK:-0}"
+drift=0
 
 if ! have_cmd claude; then
   log "claude not installed; skipping"
@@ -49,11 +50,24 @@ run() {
   "$@"
 }
 
+# Your own plugins (claude/mods) are a local marketplace at ~/.claude/mods.
+mods_link="$HOME/.claude/mods"
+if [[ "$(readlink "$mods_link" 2>/dev/null)" != "$REPO_ROOT/claude/mods" ]]; then
+  if [[ "$CHECK" == "1" ]]; then
+    log "missing link: $mods_link -> $REPO_ROOT/claude/mods"
+    drift=1
+  elif [[ -e "$mods_link" && ! -L "$mods_link" ]]; then
+    log "$mods_link is a real folder; move its plugins into claude/mods first"
+  else
+    run mkdir -p "$HOME/.claude"
+    run ln -sfn "$REPO_ROOT/claude/mods" "$mods_link"
+  fi
+fi
+
 have_markets="$(jq -r 'keys[]' "$HOME/.claude/plugins/known_marketplaces.json" 2>/dev/null || true)"
 have_plugins="$(jq -r '.plugins | keys[]' "$HOME/.claude/plugins/installed_plugins.json" 2>/dev/null || true)"
 have_mcp="$(jq -r '.mcpServers // {} | keys[]' "$HOME/.claude.json" 2>/dev/null || true)"
 
-drift=0
 missing() {
   if [[ "$CHECK" == "1" ]]; then
     log "missing $1: $2"

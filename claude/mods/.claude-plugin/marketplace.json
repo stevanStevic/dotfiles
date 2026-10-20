@@ -1,0 +1,11 @@
+{
+  "name": "local-mods",
+  "owner": { "name": "Stevan Stevic" },
+  "plugins": [
+    {
+      "name": "fwlog",
+      "source": "./fwlog",
+      "description": "Live firmware log pane: tabbed, per-session tail of /tmp/claude-bench/*.log with scrollback, never touching the serial port"
+    }
+  ]
+}

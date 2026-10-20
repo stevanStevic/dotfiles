@@ -1,5 +1,6 @@
 # Claude Code setup, one line per item: kind, name, source, profiles.
 #   marketplace  <name>  <github owner/repo | git URL | ~/path>
+# Local plugins live in claude/mods; the module links ~/.claude/mods to it.
 #   plugin       <plugin@marketplace>
 #   mcp-http     <name>  <URL>          (OAuth: run /mcp once to log in)
 #   mcp-stdio    <name>  <command line>
