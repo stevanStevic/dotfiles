@@ -1,0 +1,37 @@
+# Claude Code setup, one line per item: kind, name, source, profiles.
+#   marketplace  <name>  <github owner/repo | git URL | ~/path>
+#   plugin       <plugin@marketplace>
+#   mcp-http     <name>  <URL>          (OAuth: run /mcp once to log in)
+#   mcp-stdio    <name>  <command line>
+# profiles: "brain" (laptop and your server account), "laptop" or "server"
+# (one of them only), "agent" (<you>-agent: work tools only, nothing that
+# reaches your personal data or posts as you).
+# No keys in this file; they are typed on each machine.
+#
+# kind	name	source	profiles
+marketplace	claude-plugins-official	anthropics/claude-plugins-official	brain,agent
+marketplace	ui-ux-pro-max-skill	https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git	brain,agent
+marketplace	my-claude-skills	stevanStevic/my-claude-skills	brain
+marketplace	hyperframes	heygen-com/hyperframes	brain
+marketplace	earthtojake	earthtojake/text-to-cad	brain
+marketplace	local-mods	~/.claude/mods	brain,agent
+plugin	superpowers@claude-plugins-official	-	brain,agent
+plugin	claude-md-management@claude-plugins-official	-	brain,agent
+plugin	code-review@claude-plugins-official	-	brain,agent
+plugin	frontend-design@claude-plugins-official	-	brain,agent
+plugin	ralph-loop@claude-plugins-official	-	brain,agent
+plugin	ui-ux-pro-max@ui-ux-pro-max-skill	-	brain,agent
+plugin	fwlog@local-mods	-	brain,agent
+plugin	figma@claude-plugins-official	-	brain
+plugin	firecrawl@claude-plugins-official	-	brain
+plugin	vercel@claude-plugins-official	-	brain
+plugin	slack@claude-plugins-official	-	brain
+plugin	ib-purchase-statement@my-claude-skills	-	brain
+plugin	hyperframes@hyperframes	-	brain
+plugin	text-to-cad@earthtojake	-	brain
+plugin	telegram@claude-plugins-official	-	server
+mcp-http	figma	https://mcp.figma.com/mcp	brain
+mcp-http	linear-server	https://mcp.linear.app/mcp	brain
+mcp-http	slack-chladni	https://mcp.slack.com/mcp	brain
+mcp-stdio	playwright	npx @playwright/mcp@latest	brain
+mcp-stdio	blender	uvx mcp-for-blender	laptop
