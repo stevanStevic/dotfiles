@@ -11,7 +11,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 REPO_URL="https://github.com/stevanStevic/dotfiles.git"
-DEST="${DOTFILES_DEST:-$HOME/ws/dotfiles}"
+DEST="${DOTFILES_DEST:-$HOME/code/dotfiles}"
 
 log() { printf '[bootstrap] %s\n' "$*"; }
 

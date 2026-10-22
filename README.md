@@ -11,7 +11,7 @@ and dotfile symlinks into `$HOME`.
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevanStevic/dotfiles/main/bootstrap.sh)"
 ```
 
-That installs `git`, clones this repo to `~/ws/dotfiles`, and runs all modules.
+That installs `git`, clones this repo to `~/code/dotfiles`, and runs all modules.
 
 ## What it does
 
@@ -24,6 +24,7 @@ That installs `git`, clones this repo to `~/ws/dotfiles`, and runs all modules.
 | `40-nvim` | neovim ≥ 0.11 from stable PPA |
 | `50-tmux` | tmux |
 | `60-fonts` | JetBrainsMono Nerd Font + Meslo Nerd Font (user-local) |
+| `80-aws` | AWS CLI v2 from Amazon's installer, if missing |
 | `90-symlinks` | Symlink `dotfiles/*` into `$HOME` |
 
 ## Running individual modules
