@@ -83,6 +83,25 @@ while IFS=$'\t' read -r name src; do
   run claude plugin marketplace add "${src/#\~/$HOME}"
 done < <(rows marketplace)
 
+# Auto-update every remote manifest marketplace, so plugin changes reach
+# this machine without a rerun. Local paths are already live.
+known="$HOME/.claude/plugins/known_marketplaces.json"
+while IFS=$'\t' read -r name src; do
+  [[ "$src" == [~/]* ]] && continue
+  [[ "$(jq -r --arg n "$name" '.[$n].autoUpdate // false' "$known" 2>/dev/null)" == "true" ]] && continue
+  if [[ "$CHECK" == "1" ]]; then
+    log "auto-update off: marketplace $name"
+    drift=1
+    continue
+  fi
+  # A dry run never added the marketplace, so there is nothing to flip.
+  jq -e --arg n "$name" 'has($n)' "$known" >/dev/null 2>&1 || continue
+  log "auto-update on: marketplace $name"
+  [[ "${DRY_RUN:-0}" == "1" ]] && continue
+  tmp="$(mktemp)"
+  jq --arg n "$name" '.[$n].autoUpdate = true' "$known" >"$tmp" && mv "$tmp" "$known"
+done < <(rows marketplace)
+
 while IFS=$'\t' read -r name _; do
   grep -qxF "$name" <<<"$have_plugins" && continue
   missing plugin "$name" || continue

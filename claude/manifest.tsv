@@ -28,6 +28,7 @@ plugin	firecrawl@claude-plugins-official	-	brain
 plugin	vercel@claude-plugins-official	-	brain
 plugin	slack@claude-plugins-official	-	brain
 plugin	ib-purchase-statement@my-claude-skills	-	brain
+plugin	loptech-rfq-scoping@my-claude-skills	-	brain
 plugin	hyperframes@hyperframes	-	brain
 plugin	text-to-cad@earthtojake	-	brain
 plugin	telegram@claude-plugins-official	-	server
